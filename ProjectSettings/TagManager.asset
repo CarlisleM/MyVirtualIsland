@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags: []
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: Beach
+    uniqueID: 4279802975
+    locked: 0
+  - name: GroundMap
+    uniqueID: 1606318183
+    locked: 0
+  - name: DecorativeGround
+    uniqueID: 40620609
+    locked: 0
+  - name: Decorations
+    uniqueID: 2998244167
+    locked: 0
+  - name: UniqueStructures
+    uniqueID: 3512985501
+    locked: 0
+  - name: UI
+    uniqueID: 2846574359
+    locked: 0

@@ -1,0 +1,1 @@
+{"playerMoney":0,"playerPosition":{"x":82.43000030517578,"y":50.0,"z":0.0}}
