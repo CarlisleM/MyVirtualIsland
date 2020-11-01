@@ -34,7 +34,7 @@ public class SeasonController : MonoBehaviour
 
     void Start()
     {
-        CheckSeason();
+        CheckSeason(); 
         DayNightCycle();
     }
 
