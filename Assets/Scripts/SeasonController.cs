@@ -17,6 +17,9 @@ public class SeasonController : MonoBehaviour
     [SerializeField]
     private Image seasonIcon;
 
+    [SerializeField]
+    private Image nightBackground;
+
     System.DateTime moment = DateTime.Now;
 
     int daysInCurrentMonth;
@@ -32,18 +35,26 @@ public class SeasonController : MonoBehaviour
     void Start()
     {
         CheckSeason();
-        DaytNightCycle();
+        DayNightCycle();
     }
 
-    private void DaytNightCycle ()
+    private void DayNightCycle ()
     {
         if (DateTime.Now.Hour > 18 || DateTime.Now.Hour < 6)
         {
             Debug.Log("Time: " + DateTime.Now.Hour + " Cycle: Night time");
+            // Night time background noises
+            var tempColor = nightBackground.color;
+            tempColor.a = 0.4f;
+            nightBackground.color = tempColor;
         }
         else
         {
             Debug.Log("Time: " + DateTime.Now.Hour + " Cycle: Day time");
+            // Daytime background noises
+            var tempColor = nightBackground.color;
+            tempColor.a = 0f;
+            nightBackground.color = tempColor;
         }
     }
 

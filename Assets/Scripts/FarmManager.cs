@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using TMPro;
 
 public class FarmManager : MonoBehaviour
 {
@@ -125,6 +126,7 @@ public class FarmManager : MonoBehaviour
     public void CollectIncome(Vector3Int gridPosition)
     {
         GlobalVariables.Variables.playerMoney += (int)farmTiles[gridPosition];
+        GlobalVariables.Variables.playerMoneyText.GetComponent<TextMeshProUGUI>().text = "Money: " + GlobalVariables.Variables.playerMoney;
         farmTiles[gridPosition] = 0;
     }
 

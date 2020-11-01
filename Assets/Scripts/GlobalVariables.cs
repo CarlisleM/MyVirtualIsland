@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using UnityEngine.Tilemaps;
+using TMPro;
 
 [Serializable]
 public class GameVariables
@@ -15,6 +16,8 @@ public class GameVariables
     [Header("Game Achievements")]
     public int housesConstructed = 0;
     public int numberOfVillagers = 0;
+
+    public TextMeshProUGUI playerMoneyText;
     
     // [Header("Audio")]
     // public AudioClip[] metalImpactSounds;

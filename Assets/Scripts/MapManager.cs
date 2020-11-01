@@ -5,9 +5,7 @@ using UnityEngine.Tilemaps;
 
 public static class MapManager
 {
-    
-
-    // Place a tile for a certain cost at a position on the grid
+        // Place a tile for a certain cost at a position on the grid
     public static void PlaceTile(Tilemap map, Vector3Int pos, Tile tileType, int cost)
     {
         if (GlobalVariables.Variables.playerMoney > cost)

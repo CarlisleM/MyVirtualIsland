@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class UIController : MonoBehaviour
 {
@@ -18,7 +19,19 @@ public class UIController : MonoBehaviour
     [SerializeField]
     private GameObject toggleMenuButton;
 
+    [SerializeField]
+    private TextMeshProUGUI playerMoney;
+
+    [SerializeField]
+    private TextMeshProUGUI playerFood;
+
     private bool showMenu = true;
+
+    private void Start()
+    {
+        GlobalVariables.Variables.playerMoneyText.GetComponent<TextMeshProUGUI>().text = "Money: " + GlobalVariables.Variables.playerMoney;
+        playerFood.GetComponent<TextMeshProUGUI>().text = "Food: " + GlobalVariables.Variables.playerFood;
+    }
 
     // Set selected panel to active and disable all others. Disable selected panel if it is already active.
     public void SetPanelActive(GameObject currentPanel)
