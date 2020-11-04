@@ -25,10 +25,10 @@ public class RandomEvents : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(1))
-        {
-            NotifyPlayer();
-        }
+        // if (Input.GetMouseButtonDown(1))
+        // {
+        //     NotifyPlayer();
+        // }
     }
 
     public void StartRandomEvents()

@@ -14,6 +14,9 @@ public class BuildingManager : MonoBehaviour
     private Tile sandTile, groundTile, grassTile, farmTile, houseTile;
 
     [SerializeField]
+    private TileBase farmScriptedTile;
+
+    [SerializeField]
     private TileBase waterTile, beachTile;
 
     [SerializeField]
@@ -113,7 +116,6 @@ public class BuildingManager : MonoBehaviour
     {
         if (currentlyBuilding)
         {
-
             Vector3 gridPosition = UtilityHelper.SnapToGrid(UtilityHelper.GetMouseWorldPosition());
             selectedObject.transform.position = gridPosition;
             // This could be called whenever cell changes rather than constantly (small optimisation)
@@ -135,16 +137,22 @@ public class BuildingManager : MonoBehaviour
                 if (tileToBuild != null)
                 {
                     MapManager.PlaceTile(mapToBuildOn, tileLocation, tileToBuild, tilePrice);
-                    GameObject costText = Instantiate(tileCostText, tileLocation, Quaternion.identity) as GameObject;
-                    costText.transform.GetChild(0).GetComponent<TextMesh>().text = "" + tilePrice;
-                    GlobalVariables.Variables.playerMoneyText.GetComponent<TextMeshProUGUI>().text = "Money: " + GlobalVariables.Variables.playerMoney;
+                    
+                    if (GlobalVariables.Variables.playerMoney >= tilePrice) // Checks if the player has enough money here AND in mapmanager, needs optimising
+                    {   
+                        GameObject costText = Instantiate(tileCostText, tileLocation, Quaternion.identity) as GameObject;
+                        costText.transform.GetChild(0).GetComponent<TextMesh>().text = "" + tilePrice;
+                    }
                 }
                 else
                 {
                     MapManager.PlaceTileBase(mapToBuildOn, tileLocation, tileBaseToBuild, tilePrice);
-                    GameObject costText = Instantiate(tileCostText, tileLocation, Quaternion.identity) as GameObject;
-                    costText.transform.GetChild(0).GetComponent<TextMesh>().text = "" + tilePrice;
-                    GlobalVariables.Variables.playerMoneyText.GetComponent<TextMeshProUGUI>().text = "Money: " + GlobalVariables.Variables.playerMoney;
+
+                    if (GlobalVariables.Variables.playerMoney >= tilePrice) // Checks if the player has enough money here AND in mapmanager, needs optimising
+                    {
+                        GameObject costText = Instantiate(tileCostText, tileLocation, Quaternion.identity) as GameObject;
+                        costText.transform.GetChild(0).GetComponent<TextMesh>().text = "" + tilePrice;
+                    }
                 }
                 
                 if (tileToBuild == farmTile)

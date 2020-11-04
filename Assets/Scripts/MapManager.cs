@@ -2,16 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.UI;
+using TMPro;
 
 public static class MapManager
 {
-        // Place a tile for a certain cost at a position on the grid
+    // Place a tile for a certain cost at a position on the grid
     public static void PlaceTile(Tilemap map, Vector3Int pos, Tile tileType, int cost)
     {
-        if (GlobalVariables.Variables.playerMoney > cost)
+        if (GlobalVariables.Variables.playerMoney >= cost)
         {
             map.SetTile(pos, tileType);
             GlobalVariables.Variables.playerMoney -= cost;
+            GlobalVariables.Variables.playerMoneyText.GetComponent<TextMeshProUGUI>().text = "Money: " + GlobalVariables.Variables.playerMoney;
             BuildingManager.objectsBuilt.Add(pos);
             BuildingManager.mapBuiltOn.Add(map);
         }
@@ -20,10 +23,11 @@ public static class MapManager
     // Place a tilebase for a certain cost at a position on the grid
     public static void PlaceTileBase(Tilemap map, Vector3Int pos, TileBase tileType, int cost)
     {
-        if (GlobalVariables.Variables.playerMoney > cost)
+        if (GlobalVariables.Variables.playerMoney >= cost)
         {
             map.SetTile(pos, tileType);
             GlobalVariables.Variables.playerMoney -= cost;
+            GlobalVariables.Variables.playerMoneyText.GetComponent<TextMeshProUGUI>().text = "Money: " + GlobalVariables.Variables.playerMoney;
             BuildingManager.objectsBuilt.Add(pos);
             BuildingManager.mapBuiltOn.Add(map);
         }
