@@ -11,13 +11,10 @@ public class BuildingManager : MonoBehaviour
     private Tilemap beachMap, groundMap, decorativeGroundMap, decorationsMap, farmMap, structuresMap;
 
     [SerializeField]
-    private Tile sandTile, groundTile, grassTile, farmTile, houseTile;
+    private Tile sandTile, groundTile, grassTile, houseTile;
 
     [SerializeField]
-    private TileBase farmScriptedTile;
-
-    [SerializeField]
-    private TileBase waterTile, beachTile;
+    private TileBase waterTile, beachTile, farmTile;
 
     [SerializeField]
     private GameObject selectedObject;
@@ -34,6 +31,7 @@ public class BuildingManager : MonoBehaviour
     private bool validPlacement = false;
 
     private int tilePrice;
+    private Sprite tileSprite;
     private Tile tileToBuild;
     private TileBase tileBaseToBuild;
     private Tilemap mapToBuildOn;
@@ -57,6 +55,11 @@ public class BuildingManager : MonoBehaviour
         }
     }
 
+    public void SetBuildingSprite(Sprite sprite)
+    {
+        tileSprite = sprite;
+    }
+
     public void StartBuildingTileBase(TileBase tile)
     {
         currentlyBuilding = true;
@@ -64,7 +67,7 @@ public class BuildingManager : MonoBehaviour
         tileToBuild = null;
         tileBaseToBuild = tile;
 
-        selectedObject.GetComponent<SpriteRenderer>().sprite = sandTile.sprite; // Need a new way to select which sprite to create
+        selectedObject.GetComponent<SpriteRenderer>().sprite = tileSprite; // Need a new way to select which sprite to create
         selectedObject.transform.position = UtilityHelper.GetMouseWorldPosition();
 
         if (selectedObject.activeSelf == false)
@@ -155,10 +158,10 @@ public class BuildingManager : MonoBehaviour
                     }
                 }
                 
-                if (tileToBuild == farmTile)
-                {
-                    FarmManager.iList.Add(tileLocation);
-                }
+                // if (tileToBuild == farmTile)
+                // {
+                //     FarmManager.iList.Add(tileLocation);
+                // }
             }
 
             // Check if the object can be placed there
@@ -185,7 +188,7 @@ public class BuildingManager : MonoBehaviour
                 validPlacement = isValid(beachMap, tileLocation, null, beachTile);
             }
 
-            if ((tileToBuild == grassTile) || tileToBuild == farmTile)
+            if ((tileToBuild == grassTile) || tileBaseToBuild == farmTile)
             {
                 validPlacement = isValid(groundMap, tileLocation, groundTile, null);
             }
