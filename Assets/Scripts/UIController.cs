@@ -74,9 +74,20 @@ public class UIController : MonoBehaviour
         showMenu = !showMenu;
     }
 
+    public void TogglePanel(GameObject go)
+    {
+        if (go.activeSelf)
+        {
+            go.SetActive(false);
+        }
+        else
+        {
+            go.SetActive(true);
+        }
+    }
+
     // public void ArrangeIsland()
     // {
     //     // Change what the controls do
-    // }
-
+    // }   
 }
