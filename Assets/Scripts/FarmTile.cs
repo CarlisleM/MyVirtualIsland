@@ -19,7 +19,7 @@ public class FarmTile : Tile
 
 #if UNITY_EDITOR
     [MenuItem("Assets/Farm Tile")]
-    public static void CreateTestFarmTile()
+    public static void CreateFarmTile()
     {
         string path = EditorUtility.SaveFilePanelInProject("Save Farm Tile", "New Farm Tile", "Asset", "Save Farm Tile", "Assets");
         if (path == "")
