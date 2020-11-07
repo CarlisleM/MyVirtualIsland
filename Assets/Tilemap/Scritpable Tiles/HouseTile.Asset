@@ -34,4 +34,4 @@ MonoBehaviour:
   m_InstancedGameObject: {fileID: 0}
   m_Flags: 1
   m_ColliderType: 1
-  house: {fileID: 4847230828782485650, guid: ee7bb7290c6cfdc4193f464b5f9408bd, type: 3}
+  house: {fileID: 1728793139935706973, guid: 08c5d70ad47b69941a898e889ebad890, type: 3}

@@ -26,8 +26,8 @@ public static class UtilityHelper
 
     public static Vector3 SnapToGrid(Vector3 pos)
     {
-        float x = Mathf.FloorToInt(pos.x) + 0.5f;
-        float y = Mathf.FloorToInt(pos.y) + 0.5f;
+        float x = Mathf.FloorToInt(pos.x);
+        float y = Mathf.FloorToInt(pos.y);
         float z = 0;
 
         return new Vector3(x, y, z);

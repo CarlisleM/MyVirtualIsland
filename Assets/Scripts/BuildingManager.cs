@@ -11,10 +11,10 @@ public class BuildingManager : MonoBehaviour
     private Tilemap beachMap, groundMap, decorativeGroundMap, decorationsMap, farmMap, structuresMap;
 
     [SerializeField]
-    private Tile sandTile, groundTile, grassTile, houseTile;
+    private TileBase waterTile, beachTile, groundTile, grassTile, farmTile, houseTile;
 
     [SerializeField]
-    private TileBase waterTile, beachTile, farmTile;
+    private TileBase[] houseTiles;
 
     [SerializeField]
     private GameObject selectedObject;
@@ -32,39 +32,21 @@ public class BuildingManager : MonoBehaviour
 
     private int tilePrice;
     private Sprite tileSprite;
-    private Tile tileToBuild;
     private TileBase tileBaseToBuild;
     private Tilemap mapToBuildOn;
 
     public GameObject tileCostText;
-    
-    // Enter building mode and select the object to build
-    public void StartBuildingTile(Tile tile)
-    {
-        currentlyBuilding = true;
-
-        tileBaseToBuild = null;
-        tileToBuild = tile;
-        
-        selectedObject.GetComponent<SpriteRenderer>().sprite = tile.sprite;
-        selectedObject.transform.position = UtilityHelper.GetMouseWorldPosition();
-
-        if (selectedObject.activeSelf == false)
-        {
-            selectedObject.SetActive(true);
-        }
-    }
 
     public void SetBuildingSprite(Sprite sprite)
     {
         tileSprite = sprite;
     }
 
+    // Enter building mode and select the object to build
     public void StartBuildingTileBase(TileBase tile)
     {
         currentlyBuilding = true;
 
-        tileToBuild = null;
         tileBaseToBuild = tile;
 
         selectedObject.GetComponent<SpriteRenderer>().sprite = tileSprite; // Need a new way to select which sprite to create
@@ -124,44 +106,20 @@ public class BuildingManager : MonoBehaviour
             // This could be called whenever cell changes rather than constantly (small optimisation)
             Vector3Int tileLocation = groundMap.WorldToCell(UtilityHelper.GetMouseWorldPosition());
 
-            if (!validPlacement)
-            {
-                selectedObject.GetComponent<SpriteRenderer>().color = Color.red;
-            }
-            else
-            {
-                selectedObject.GetComponent<SpriteRenderer>().color = Color.white;
-            }
+            selectedObject.GetComponent<SpriteRenderer>().color = validPlacement ? Color.white : Color.red; // Change white to regular colour maybe?
 
             if (Input.GetMouseButtonDown(0) && validPlacement)
             {
                 tileLocation = beachMap.WorldToCell(UtilityHelper.GetMouseWorldPosition());
 
-                if (tileToBuild != null)
-                {
-                    MapManager.PlaceTile(mapToBuildOn, tileLocation, tileToBuild, tilePrice);
-                    
-                    if (GlobalVariables.Variables.playerMoney >= tilePrice) // Checks if the player has enough money here AND in mapmanager, needs optimising
-                    {   
-                        GameObject costText = Instantiate(tileCostText, tileLocation, Quaternion.identity) as GameObject;
-                        costText.transform.GetChild(0).GetComponent<TextMesh>().text = "" + tilePrice;
-                    }
-                }
-                else
-                {
-                    MapManager.PlaceTileBase(mapToBuildOn, tileLocation, tileBaseToBuild, tilePrice);
+                // MapManager.PlaceTileLarge(mapToBuildOn, tileLocation, houseTiles, tilePrice, 3, 3);
+                MapManager.PlaceTile(mapToBuildOn, tileLocation, tileBaseToBuild, tilePrice);
 
-                    if (GlobalVariables.Variables.playerMoney >= tilePrice) // Checks if the player has enough money here AND in mapmanager, needs optimising
-                    {
-                        GameObject costText = Instantiate(tileCostText, tileLocation, Quaternion.identity) as GameObject;
-                        costText.transform.GetChild(0).GetComponent<TextMesh>().text = "" + tilePrice;
-                    }
+                if (GlobalVariables.Variables.playerMoney >= tilePrice) // Checks if the player has enough money here AND in mapmanager, needs optimising
+                {
+                    GameObject costText = Instantiate(tileCostText, tileLocation, Quaternion.identity) as GameObject;
+                    costText.transform.GetChild(0).GetComponent<TextMesh>().text = "" + tilePrice;
                 }
-                
-                // if (tileToBuild == farmTile)
-                // {
-                //     FarmManager.iList.Add(tileLocation);
-                // }
             }
 
             // Check if the object can be placed there
@@ -183,46 +141,40 @@ public class BuildingManager : MonoBehaviour
                 }
             }
             
-            if (tileToBuild == groundTile)
+            if (tileBaseToBuild == groundTile)
             {
-                validPlacement = isValid(beachMap, tileLocation, null, beachTile);
+                validPlacement = isValidPlacement(beachMap, tileLocation, beachTile, 1, 1);
             }
 
-            if ((tileToBuild == grassTile) || tileBaseToBuild == farmTile)
+            if ((tileBaseToBuild == grassTile) || tileBaseToBuild == farmTile)
             {
-                validPlacement = isValid(groundMap, tileLocation, groundTile, null);
+                validPlacement = isValidPlacement(groundMap, tileLocation, groundTile, 1, 1);
             }
 
-            if (tileToBuild == beachTile)
+            if (tileBaseToBuild == houseTile)
             {
-                validPlacement = isValid(beachMap, tileLocation, null, waterTile);
+                validPlacement = isValidPlacement(groundMap, tileLocation, groundTile, 3, 3);
             }
         }
     }
 
-    public bool isValid(Tilemap requiredTileMap, Vector3Int tileLocation, Tile requiredTile, TileBase requiredTileBase)
+    // Can simplify this and reduce duplicate code
+    public bool isValidPlacement(Tilemap requiredTileMap, Vector3Int tileLocation, TileBase requiredTileBase, int structureHeight, int structureWidth)
     {
-        if (requiredTile != null)
+        int tilesValid = 0;
+
+        for (int i = 0; i < structureWidth; i++)
         {
-            if (requiredTileMap.GetTile(tileLocation) == requiredTile)
+            for (int j = 0; j < structureHeight; j++)
             {
-                return true;
-            }
-            else
-            {
-                return false;
+                if (requiredTileMap.GetTile(new Vector3Int(tileLocation.x+i, tileLocation.y+j, 0)) == requiredTileBase)
+                {
+                    tilesValid += 1;
+                }
             }
         }
-        else
-        {
-            if (requiredTileMap.GetTile(tileLocation) == requiredTileBase)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }        
+
+        return tilesValid == (structureHeight*structureWidth); // Return true if all tiles are valid
     }
 }
+
