@@ -35,6 +35,8 @@ public class BuildingManager : MonoBehaviour
     private TileBase tileBaseToBuild;
     private Tilemap mapToBuildOn;
 
+    private int structureWidth, structureHeight;
+
     public GameObject tileCostText;
 
     public void SetBuildingSprite(Sprite sprite)
@@ -106,22 +108,6 @@ public class BuildingManager : MonoBehaviour
             // This could be called whenever cell changes rather than constantly (small optimisation)
             Vector3Int tileLocation = groundMap.WorldToCell(UtilityHelper.GetMouseWorldPosition());
 
-            selectedObject.GetComponent<SpriteRenderer>().color = validPlacement ? Color.white : Color.red; // Change white to regular colour maybe?
-
-            if (Input.GetMouseButtonDown(0) && validPlacement)
-            {
-                tileLocation = beachMap.WorldToCell(UtilityHelper.GetMouseWorldPosition());
-
-                // MapManager.PlaceTileLarge(mapToBuildOn, tileLocation, houseTiles, tilePrice, 3, 3);
-                MapManager.PlaceTile(mapToBuildOn, tileLocation, tileBaseToBuild, tilePrice);
-
-                if (GlobalVariables.Variables.playerMoney >= tilePrice) // Checks if the player has enough money here AND in mapmanager, needs optimising
-                {
-                    GameObject costText = Instantiate(tileCostText, tileLocation, Quaternion.identity) as GameObject;
-                    costText.transform.GetChild(0).GetComponent<TextMesh>().text = "" + tilePrice;
-                }
-            }
-
             // Check if the object can be placed there
             if (tileBaseToBuild == beachTile)
             {
@@ -143,38 +129,72 @@ public class BuildingManager : MonoBehaviour
             
             if (tileBaseToBuild == groundTile)
             {
+                structureHeight = 1;
+                structureWidth = 1;
                 validPlacement = isValidPlacement(beachMap, tileLocation, beachTile, 1, 1);
             }
 
             if ((tileBaseToBuild == grassTile) || tileBaseToBuild == farmTile)
             {
+                structureHeight = 1;
+                structureWidth = 1;
                 validPlacement = isValidPlacement(groundMap, tileLocation, groundTile, 1, 1);
             }
 
             if (tileBaseToBuild == houseTile)
             {
+                structureHeight = 3;
+                structureWidth = 3;
                 validPlacement = isValidPlacement(groundMap, tileLocation, groundTile, 3, 3);
             }
+
+            selectedObject.GetComponent<SpriteRenderer>().color = validPlacement ? Color.white : Color.red; // Set colour based on if the tile can be placed here or not
+
+            // If able to be placed and the user clicks
+            if (Input.GetMouseButtonDown(0) && validPlacement)
+            {
+                tileLocation = beachMap.WorldToCell(UtilityHelper.GetMouseWorldPosition());
+
+                // MapManager.PlaceTileLarge(mapToBuildOn, tileLocation, houseTiles, tilePrice, 3, 3);
+                if (structureHeight*structureWidth == 1)
+                {
+                    MapManager.PlaceTile(mapToBuildOn, tileLocation, tileBaseToBuild, tilePrice);
+                }
+                else
+                {
+                    MapManager.PlaceMultiTile(mapToBuildOn, tileLocation, houseTiles, tilePrice, structureHeight, structureWidth);
+                }
+                
+
+                if (GlobalVariables.Variables.playerMoney >= tilePrice) // Checks if the player has enough money here AND in mapmanager, needs optimising
+                {
+                    GameObject costText = Instantiate(tileCostText, tileLocation, Quaternion.identity) as GameObject;
+                    costText.transform.GetChild(0).GetComponent<TextMesh>().text = "" + tilePrice;
+                }
+            }            
         }
     }
 
     // Can simplify this and reduce duplicate code
-    public bool isValidPlacement(Tilemap requiredTileMap, Vector3Int tileLocation, TileBase requiredTileBase, int structureHeight, int structureWidth)
+    public bool isValidPlacement(Tilemap requiredTileMap, Vector3Int tileLocation, TileBase requiredTileBase, int strucHeight, int strucWidth)
     {
         int tilesValid = 0;
 
-        for (int i = 0; i < structureWidth; i++)
+        for (int i = 0; i < strucWidth; i++)
         {
-            for (int j = 0; j < structureHeight; j++)
+            for (int j = 0; j < strucHeight; j++)
             {
-                if (requiredTileMap.GetTile(new Vector3Int(tileLocation.x+i, tileLocation.y+j, 0)) == requiredTileBase)
+                if ((requiredTileMap.GetTile(new Vector3Int(tileLocation.x+i, tileLocation.y+j, 0)) == requiredTileBase) && (mapToBuildOn.GetTile(new Vector3Int(tileLocation.x+i, tileLocation.y+j, 0)) != tileBaseToBuild))
                 {
-                    tilesValid += 1;
+                    if (farmMap.GetTile(new Vector3Int(tileLocation.x+i, tileLocation.y+j, 0)) == null && structuresMap.GetTile(new Vector3Int(tileLocation.x+i, tileLocation.y+j, 0)) == null) // Add decorations map later
+                    {
+                        tilesValid += 1;
+                    }
                 }
             }
         }
 
-        return tilesValid == (structureHeight*structureWidth); // Return true if all tiles are valid
+        return tilesValid == (strucHeight*strucWidth); // Return true if all tiles are valid
     }
 }
 

@@ -37,7 +37,7 @@ public static class MapManager
         }
     }
 
-    public static void PlaceTileLarge(Tilemap map, Vector3Int pos, TileBase[] tileType, int cost, int structureHeight, int structureWidth)
+    public static void PlaceMultiTile(Tilemap map, Vector3Int pos, TileBase[] tileType, int cost, int structureHeight, int structureWidth)
     {
         if (GlobalVariables.Variables.playerMoney >= cost)
         {
@@ -47,7 +47,7 @@ public static class MapManager
             {
                 for (int j = 0; j < structureHeight; j++)
                 {
-                    Debug.Log("Setting tile: " + tileType[tileCounter] + " at: " + new Vector3Int(pos.x+i, pos.y+j, 0));
+                    // Debug.Log("Setting tile: " + tileType[tileCounter] + " at: " + new Vector3Int(pos.x+i, pos.y+j, 0));
                     map.SetTile(new Vector3Int(pos.x+i, pos.y+j, 0), tileType[tileCounter]); // Tile 0 has a gameobject attached that is the size of the generated structure     
                     tileCounter += 1;               
                 }

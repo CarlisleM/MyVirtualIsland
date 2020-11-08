@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92df11dd9e19e1c48878e8b70b57d5a7, type: 3}
   m_Name: HouseTile
   m_EditorClassIdentifier: 
-  m_Sprite: {fileID: 21300000, guid: 293fcdc71d1ec9a489d6e11d1d28b6f0, type: 3}
+  m_Sprite: {fileID: 8265104546754900614, guid: af5a9e5e67ce0f64ab7d250863218fe2,
+    type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Transform:
     e00: 1
