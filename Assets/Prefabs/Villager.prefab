@@ -14,6 +14,8 @@ GameObject:
   - component: {fileID: 2566055847193087910}
   - component: {fileID: 2566055847193087909}
   - component: {fileID: 2566055847193087928}
+  - component: {fileID: 1223720378899801882}
+  - component: {fileID: 2566055848063951594}
   m_Layer: 0
   m_Name: VillagerAI
   m_TagString: Untagged
@@ -132,7 +134,7 @@ BoxCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2566055847193087906}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
@@ -151,6 +153,41 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 3}
   m_EdgeRadius: 0
+--- !u!114 &1223720378899801882
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2566055847193087906}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6ad9cf8dacd90648a84c4f3c5603369, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  villager: {fileID: 2566055847578722651}
+  villagerState: {fileID: 0}
+  uniqueMap: {fileID: 0}
+  farmTile: {fileID: 11400000, guid: 9bdc099d2908ff540b211b3a48e9250d, type: 2}
+  farmMap: {fileID: 0}
+  foodAmount: 0
+  waypoint: {fileID: 2566055847667450068}
+  campFire:
+  - {fileID: 0}
+  - {fileID: 0}
+--- !u!114 &2566055848063951594
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2566055847193087906}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1531fd19d49da434a8985e3f472e8ef3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  state: 0
 --- !u!1 &2566055847578722651
 GameObject:
   m_ObjectHideFlags: 0
@@ -197,6 +234,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   waypoint: {fileID: 2566055847667450068}
+  campFire:
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!1 &2566055847667450068
 GameObject:
   m_ObjectHideFlags: 0
@@ -222,7 +262,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2566055847667450068}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 21, y: 5, z: 0}
+  m_LocalPosition: {x: 21, y: 5.01, z: 0}
   m_LocalScale: {x: 0.3, y: 0.36, z: 1}
   m_Children: []
   m_Father: {fileID: 2566055847578722652}
