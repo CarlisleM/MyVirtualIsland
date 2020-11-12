@@ -36,6 +36,12 @@ public class DragObject : MonoBehaviour
     [SerializeField]
     private GameObject[] campFire;
 
+    private bool villagerClicked;
+    private bool villagerDraggable;
+
+    private const float timeToDrag = 0.25f;
+    private float heldTimer = 0.0f;
+
     void Awake()
     {
         villager = GetComponent<Villager>();
@@ -43,19 +49,14 @@ public class DragObject : MonoBehaviour
 
     void OnMouseDown()
     {
+        villagerClicked = true;
+
+        GlobalVariables.Variables.currentlySelectedVillager = this.gameObject;
+
         mZCoord = Camera.main.WorldToScreenPoint(gameObject.transform.position).z;
         mOffset = gameObject.transform.position - GetMouseWorldPos();        
-
-        // If the villager is interrupted during transportation, give the farm its food back and set the villager to idle
-        if (villager.IsFarming)
-        {
-            // Destroy food in the characters hands
-                // Fade transperency to 0 then destroy
-            // currentFarm.GetComponent<FarmTileScript>().farmIncome = farmFood;
-            // farmFood = 0;
-            villager.ChangeState(Villager.States.Idle);            
-        }
     }
+
 
     private Vector3 GetMouseWorldPos()
     {
@@ -68,64 +69,85 @@ public class DragObject : MonoBehaviour
 
     void OnMouseDrag()
     {
-        transform.position = GetMouseWorldPos() + mOffset;
+        if (villagerDraggable)
+        {
+            transform.position = GetMouseWorldPos() + mOffset;
+        }
     }
 
     void OnMouseUp()
     {
-        transform.position = UtilityHelper.SnapToGrid(transform.position);
+        if (villagerDraggable)
+        {
+            transform.position = UtilityHelper.SnapToGrid(transform.position);
 
-        TileBase tileDroppedOn = uniqueMap.GetTile(new Vector3Int((int)transform.position.x, (int)transform.position.y, 0));
+            TileBase tileDroppedOn = uniqueMap.GetTile(new Vector3Int((int)transform.position.x, (int)transform.position.y, 0));
 
-        FarmTile currentTile = uniqueMap.GetTile(new Vector3Int((int)transform.position.x, (int)transform.position.y, 0)) as FarmTile;
+            FarmTile currentTile = uniqueMap.GetTile(new Vector3Int((int)transform.position.x, (int)transform.position.y, 0)) as FarmTile;
 
+            if (tileDroppedOn == farmTile)
+            {           
+                villager.ChangeState(Villager.States.Farming);
+                // Play gathering food animation
+                // Instantiate food in the characters hands            
 
+                // Debug.Log(currentTile.farm.GetComponent<FarmTileScript>().farmIncome); // This gives 0 not sure why
 
-        if (tileDroppedOn == farmTile)
-        {           
-            // Set villager current task to "Gathering food from a farm"
-            villager.ChangeState(Villager.States.Farming);
-            // Play gathering food animation
-            // Instantiate food in the characters hands            
-
-            // Debug.Log(currentTile.farm.GetComponent<FarmTileScript>().farmIncome); // This gives 0 not sure why
-
-            // Bad loop that seems like it could be replaced, need a way to get whatever object is at that position
-            // instead of looping through every object on that layer checking the position
-            foreach (Transform farm in farmMap.transform)
-            {
-                if (transform.position == farm.transform.position)
+                // Bad loop that seems like it could be replaced, need a way to get whatever object is at that position
+                // instead of looping through every object on that layer checking the position
+                foreach (Transform farm in farmMap.transform)
                 {
-                    currentFarm = farm.gameObject; 
+                    if (transform.position == farm.transform.position)
+                    {
+                        currentFarm = farm.gameObject; 
 
-                    // Store the food amount incase we need to revert it
-                    farmFood = farm.GetComponent<FarmTileScript>().farmIncome;
+                        // Store the food amount incase we need to revert it
+                        farmFood = farm.GetComponent<FarmTileScript>().farmIncome;
 
-                    // Set farm income to 0
-                    farm.GetComponent<FarmTileScript>().farmIncome = 0;
+                        // Set farm income to 0
+                        farm.GetComponent<FarmTileScript>().farmIncome = 0;
+                    }
+                }
+
+                // Set villager waypoint to their house or food storage area
+                waypoint.transform.position = new Vector3(500, 500, 0);
+
+                if ((villager.villagerFood + farmFood) > 100)
+                {
+                    farmFood = farmFood - (GlobalVariables.Variables.maxFarmFood - villager.villagerFood);
+                    villager.villagerFood = GlobalVariables.Variables.maxFarmFood;
+                }
+                else
+                {
+                    villager.villagerFood += farmFood;
+                    farmFood = 0;
                 }
             }
-
-            // Set villager waypoint to their house or food storage area
-            waypoint.transform.position = new Vector3(500, 500, 0);
-
-            int maxFood = 100; // This will be a global
-
-            if ((villager.villagerFood + farmFood) > 100)
-            {
-                farmFood = farmFood - (maxFood - villager.villagerFood);
-                villager.villagerFood = maxFood;
-            }
-            else
-            {
-                villager.villagerFood += farmFood;
-                farmFood = 0;
-            }
         }
+
+        villagerClicked = false;
+        villagerDraggable = false;
     }
 
     void FixedUpdate()
     {
+        // Count how long the user is pressing on the villager for
+        if (villagerClicked)
+        {
+            if (heldTimer < timeToDrag)
+            {
+                heldTimer += Time.deltaTime;
+            }
+            else
+            {
+                villagerDraggable = true;
+            }
+        }
+        else
+        {
+            heldTimer = 0;
+        }
+
         if (villager.IsIdle)
         {
             // Select a random location to walk to (start a task if something is within range), else wait a random amount of seconds (looking around) and then move to a new spot
@@ -137,9 +159,10 @@ public class DragObject : MonoBehaviour
         }
         else if (villager.IsFarming)
         {
-            Debug.Log(waypoint.transform.position == new Vector3(0, 0, 0));
-            Debug.Log(Vector3.Distance(gameObject.transform.localPosition, waypoint.transform.localPosition) < 1);
-            Debug.Log(villager.villagerFood > 0);
+            if (villagerDraggable)
+            {
+                villager.ChangeState(Villager.States.Idle);
+            }
 
             if ((Vector3.Distance(gameObject.transform.localPosition, waypoint.transform.localPosition) < 1) && villager.villagerFood > 0) // A house tile
             {

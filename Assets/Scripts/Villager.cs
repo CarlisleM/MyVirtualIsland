@@ -23,6 +23,7 @@ public class Villager : MonoBehaviour
         if(state == stateTo) 
             return;  
         state = stateTo;  
+        ChangeActionMessage(state);
     }
      
     public bool IsState(States stateTo) {        
@@ -32,7 +33,7 @@ public class Villager : MonoBehaviour
     }
 
     public bool IsIdle {
-        get {
+        get {            
             return IsState(States.Idle);
         }
     }
@@ -53,5 +54,18 @@ public class Villager : MonoBehaviour
         get {
             return IsState(States.Swimming);
         }
+    }
+
+    public void ChangeActionMessage(States state)
+    {
+        if (state == States.Idle)
+            GlobalVariables.Variables.currentlySelectedVillager.GetComponent<Villager>().villagerTask = "Idle.";
+        else if (state == States.Farming)         
+            GlobalVariables.Variables.currentlySelectedVillager.GetComponent<Villager>().villagerTask = "Collecting food from the farm.";
+        else if (state == States.Campfire)         
+            GlobalVariables.Variables.currentlySelectedVillager.GetComponent<Villager>().villagerTask = "Gathering around a campfire for warmth.";
+        else if (state == States.Swimming)         
+            GlobalVariables.Variables.currentlySelectedVillager.GetComponent<Villager>().villagerTask = "Swimming.";
+        
     }
 }

@@ -13,12 +13,17 @@ public class GameVariables
     public int playerMoney = 5000;
     public int playerFood = 0;
 
+    [Header("Unique Tile Limitations")]
+    public int maxFarmFood = 100;
+
     [Header("Game Achievements")]
     public int housesConstructed = 0;
     public int numberOfVillagers = 0;
 
     public TextMeshProUGUI playerMoneyText;
     
+    public GameObject currentlySelectedVillager;
+
     // [Header("Audio")]
     // public AudioClip[] metalImpactSounds;
     // public AudioClip[] environmentImpactSounds;

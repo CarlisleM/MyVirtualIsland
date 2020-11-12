@@ -86,6 +86,14 @@ public class UIController : MonoBehaviour
         }
     }
 
+    // void FixedUpdate()
+    // {
+    //     if (GlobalVariables.Variables.currentlySelectedVillager != null)
+    //     {
+    //         Debug.Log(GlobalVariables.Variables.currentlySelectedVillager.GetComponent<Villager>().villagerTask);
+    //     }
+    // }
+
     // public void ArrangeIsland()
     // {
     //     // Change what the controls do
